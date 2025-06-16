@@ -1,12 +1,3 @@
----
-title: Medical Chatbot
-emoji: 🩺
-colorFrom: blue
-sdk: gradio
-sdk_version: "4.0.0"
-app_file: app.py
----
-
 # Medical Chatbot with RAG
 
 A medical chatbot specialized in dermatology that uses Retrieval Augmented Generation (RAG) to provide accurate answers based on medical documents.
@@ -65,8 +56,4 @@ MIT License
 3. Use voice input by clicking the microphone button
 4. Toggle dark/light mode using the mode button
 5. Save conversations using the save button
-
-## Deployment
-
-This application is configured for deployment on Hugging Face Spaces using Docker.
 
