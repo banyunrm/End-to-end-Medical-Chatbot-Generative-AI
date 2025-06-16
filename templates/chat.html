@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medical Chatbot 🤖</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      color: #000;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+      background-color: #121212;
+      color: #eee;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      background-color: #f0f2f5;
+      z-index: 1000;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ccc;
+    }
+
+    body.dark-mode header {
+      background-color: #121212;
+      border-color: #444;
+    }
+
+    #header-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    #chatbox {
+      border: 1px solid #ccc;
+      background-color: #fff;
+      padding: 15px;
+      height: 400px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      border-radius: 15px;
+      transition: background-color 0.3s;
+    }
+
+    body.dark-mode #chatbox {
+      background-color: #1e1e1e;
+      border-color: #444;
+    }
+
+    .message {
+      margin: 10px 0;
+      max-width: 70%;
+      padding: 10px;
+      border-radius: 15px;
+      display: inline-block;
+      word-wrap: break-word;
+    }
+
+    .user {
+      background-color: #d1e7dd;
+      float: right;
+      clear: both;
+      text-align: right;
+    }
+
+    .bot {
+      background-color: #f8d7da;
+      float: left;
+      clear: both;
+      text-align: left;
+    }
+
+    #inputForm {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    #msg {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 20px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #007bff;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-left: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .spinner-container {
+      display: flex;
+      align-items: center;
+    }
+
+    @media (max-width: 600px) {
+      #chatbox {
+        height: 300px;
+        font-size: 14px;
+      }
+
+      #inputForm {
+        flex-direction: column;
+      }
+
+      button, #msg {
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🤖 Medical Chatbot Assistant</h1>
+    <div id="header-buttons">
+      <button type="button" id="saveBtn">💾</button>
+      <button type="button" id="modeBtn">🌓</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div id="chatbox"></div>
+
+    <form id="inputForm">
+      <input type="text" id="msg" placeholder="Type or speak your question..." autocomplete="off" required />
+      <button type="submit" id="sendBtn">📤</button>
+      <button type="button" id="voiceBtn">🎙️</button>
+      <button type="button" id="repeatBtn">🔁</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("inputForm");
+    const input = document.getElementById("msg");
+    const chatbox = document.getElementById("chatbox");
+    const repeatBtn = document.getElementById("repeatBtn");
+    const voiceBtn = document.getElementById("voiceBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const modeBtn = document.getElementById("modeBtn");
+
+    let lastBotReply = "";
+    let chatHistory = [];
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const userMsg = input.value.trim();
+      if (!userMsg) return;
+
+      addMessage("user", userMsg);
+      input.value = "";
+
+      const loadingMessage = document.createElement("div");
+      loadingMessage.className = "message spinner-container bot";
+      loadingMessage.innerHTML = `<span>🤖 Bot is typing</span> <div class="spinner"></div>`;
+      chatbox.appendChild(loadingMessage);
+      chatbox.scrollTop = chatbox.scrollHeight;
+
+      fetch("/get", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `msg=${encodeURIComponent(userMsg)}`
+      })
+        .then((response) => response.text())
+        .then((botReply) => {
+          lastBotReply = botReply;
+          chatbox.removeChild(loadingMessage);
+          addMessage("bot", botReply);
+          speak(botReply);
+        })
+        .catch((error) => {
+          chatbox.removeChild(loadingMessage);
+          addMessage("bot", `❌ Error: ${error}`);
+        });
+    });
+
+    function addMessage(role, text) {
+      const div = document.createElement("div");
+      div.className = `message ${role}`;
+      div.innerHTML = `<span>${role === "user" ? "🧑‍💬" : "🤖"}: ${text}</span>`;
+      chatbox.appendChild(div);
+      chatbox.scrollTop = chatbox.scrollHeight;
+      chatHistory.push({ role, text });
+    }
+
+    repeatBtn.addEventListener("click", () => {
+      if (lastBotReply) speak(lastBotReply);
+    });
+
+    function speak(text) {
+      const synth = window.speechSynthesis;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'en-US';
+      synth.cancel();
+      synth.speak(utter);
+    }
+
+    voiceBtn.addEventListener("click", () => {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Speech recognition not supported in your browser.");
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.start();
+
+      recognition.onstart = () => {
+        voiceBtn.innerText = "🎙️ Listening...";
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        input.value = transcript;
+        voiceBtn.innerText = "🎙️";
+      };
+
+      recognition.onerror = () => {
+        voiceBtn.innerText = "🎙️";
+        alert("Voice recognition error.");
+      };
+
+      recognition.onend = () => {
+        voiceBtn.innerText = "🎙️";
+      };
+    });
+
+    saveBtn.addEventListener("click", () => {
+      const chatText = chatHistory.map(item => `${item.role === 'user' ? 'You' : 'Bot'}: ${item.text}`).join('\n');
+      const blob = new Blob([chatText], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "chat_history.txt";
+      link.click();
+    });
+
+    modeBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+    });
+  </script>
+</body>
+</html>

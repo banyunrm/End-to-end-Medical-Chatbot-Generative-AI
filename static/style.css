@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f0f4f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.chat-container {
+  background: #ffffff;
+  width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header {
+  background: #007bff;
+  color: white;
+  padding: 15px;
+  text-align: center;
+}
+
+.chat-header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.chat-header p {
+  margin: 5px 0 0;
+  font-size: 13px;
+  font-weight: 300;
+}
+
+.chat-box {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.message {
+  display: flex;
+  margin-bottom: 15px;
+  align-items: flex-start;
+}
+
+.message .avatar {
+  width: 35px;
+  height: 35px;
+  background: #e1ecf9;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  font-size: 18px;
+  color: #007bff;
+}
+
+.message.bot .avatar {
+  background: #007bff;
+  color: white;
+}
+
+.message.user {
+  flex-direction: row-reverse;
+}
+
+.message.user .avatar {
+  margin-left: 10px;
+  margin-right: 0;
+  background: #d1e7dd;
+  color: #198754;
+}
+
+.message .content {
+  background: #f1f1f1;
+  padding: 10px 15px;
+  border-radius: 10px;
+  max-width: 75%;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.message.bot .content {
+  background: #e9f4ff;
+}
+
+.message.user .content {
+  background: #dcfce7;
+}
+
+.chat-input {
+  display: flex;
+  border-top: 1px solid #ddd;
+}
+
+.chat-input input {
+  flex: 1;
+  border: none;
+  padding: 15px;
+  font-size: 14px;
+  outline: none;
+}
+
+.chat-input button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0 20px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.3s;
+}
+
+.chat-input button:hover {
+  background: #0056b3;
+}

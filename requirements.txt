@@ -1,11 +1,10 @@
-sentence-transformers==2.2.2
-langchain
 flask
-pypdf
+langchain>=0.1.13
+langchain-community>=0.0.32
+transformers
+sentence-transformers
+torch
+faiss-cpu
 python-dotenv
-pinecone[grpc]
-langchain-pinecone
-langchain-community
-langchain-openai
-langchain-experimental
--e .
+gunicorn
+gradio>=4.0.0
