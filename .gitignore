@@ -32,7 +32,7 @@ ENV/
 *.swo
 
 # Project specific
-faiss_index/
+# faiss_index/
 Data/
 .env
 *.log
