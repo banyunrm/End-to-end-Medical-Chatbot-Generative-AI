@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-# Import Library
-from flask import Flask, render_template, request
+# Import Libraryfrom flask import Flask, render_template, request
 from dotenv import load_dotenv
 from transformers import pipeline
 from langchain_community.vectorstores import FAISS
@@ -74,7 +72,6 @@ demo = gr.ChatInterface(
 if __name__ == "__main__":
     demo.launch(server_name="0.0.0.0", server_port=8080)
 
-=======
 import gradio as gr
 from huggingface_hub import InferenceClient
 
@@ -139,4 +136,3 @@ demo = gr.ChatInterface(
 
 if __name__ == "__main__":
     demo.launch()
->>>>>>> 08418d3f9318761fd31bd5a765edb53d67e5edb3
