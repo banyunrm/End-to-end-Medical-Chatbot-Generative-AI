@@ -1,3 +1,14 @@
+---
+title: Medical Chatbot
+emoji: 🩺
+colorFrom: blue
+colorTo: green
+sdk: gradio
+sdk_version: "4.0.0"
+app_file: app.py
+pinned: false
+---
+
 # Medical Chatbot with RAG
 
 A medical chatbot specialized in dermatology that uses Retrieval Augmented Generation (RAG) to provide accurate answers based on medical documents.
